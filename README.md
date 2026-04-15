@@ -12,21 +12,53 @@ For more information, please visit [https://onesignal.com](https://onesignal.com
 
 ## Installation
 
+Módulo Go (fork Criticalmass):
+
 ```shell
-go get github.com/OneSignal/onesignal-go-api
+go get github.com/criticalmassbr/onesignal-go-api
 ```
 
-Install the following dependencies:
+Cliente oficial upstream: `github.com/OneSignal/onesignal-go-api`.
+
+Instale também:
 
 ```shell
 go get golang.org/x/oauth2
 ```
 
-Put the package under your project folder and add the following in import:
+Import:
 
 ```golang
-import "github.com/OneSignal/onesignal-go-api"
+import "github.com/criticalmassbr/onesignal-go-api"
 ```
+
+### Repositório privado (desenvolvimento local)
+
+Com o repositório **privado**, o `go` precisa autenticar no GitHub para baixar o módulo.
+
+1. Marque o escopo da org como privado (evita proxy público e checksum inválido para módulos privados):
+
+```shell
+export GOPRIVATE=github.com/criticalmassbr/*
+```
+
+2. Autentique o Git contra o GitHub **uma** destas formas:
+
+- **HTTPS + token:** crie um [Personal Access Token](https://github.com/settings/tokens) (classic: escopo `repo`, ou fine-grained: leitura do repositório) e configure:
+
+```shell
+git config --global url."https://<SEU_TOKEN>@github.com/criticalmassbr/".insteadOf "https://github.com/criticalmassbr/"
+```
+
+(substitua `<SEU_TOKEN>`; em equipes prefira variável de ambiente e não commite o token.)
+
+- **GitHub CLI:** `gh auth login` e uso de HTTPS.
+
+- **SSH:** chave cadastrada no GitHub e, se necessário, `insteadOf` de HTTPS para `git@github.com:`.
+
+3. Depois: `go get github.com/criticalmassbr/onesignal-go-api` ou `go mod tidy` no seu projeto.
+
+**CI (GitHub Actions)** em projetos que dependem deste módulo: o `GITHUB_TOKEN` do workflow **não** acessa outros repositórios privados por padrão. Use um secret (por exemplo um PAT com leitura neste repositório) e a mesma ideia de `GOPRIVATE` + `git config url … insteadOf` antes de `go mod download` / `go test`. Alinhe o nome do secret com o padrão da sua organização.
 
 To use a proxy, set the environment variable `HTTP_PROXY`:
 
